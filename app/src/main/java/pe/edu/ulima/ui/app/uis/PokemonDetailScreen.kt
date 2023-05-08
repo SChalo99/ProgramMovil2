@@ -46,6 +46,12 @@ public fun PokemonDetailScreen(
     val talla: Float by viewModel.talla.observeAsState(0f)
     val titulo: String by viewModel.titulo.observeAsState("")
 
+    var launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {})
+
+    val context = LocalContext.current
+
     Column() {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -144,7 +150,15 @@ public fun PokemonDetailScreen(
                         .fillMaxWidth()
                         .padding(top = 1.dp, /*start = 40.dp, end = 40.dp*/),
                     onClick = {
-
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "text/plain"
+                        val appPackage = "com.facebook.katana"
+                        intent.putExtra(Intent.EXTRA_TITLE, "Has Seleccionado un $nombre")
+                        intent.putExtra(Intent.EXTRA_TEXT, url)
+                        intent.setPackage(appPackage)
+                        if(intent.resolveActivity(context.packageManager) != null){
+                            launcher.launch(intent)
+                        }
                     },
                     //colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)) ,
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue)
@@ -168,7 +182,15 @@ public fun PokemonDetailScreen(
                         .fillMaxWidth()
                         .padding(top = 1.dp, /*start = 40.dp, end = 40.dp*/),
                     onClick = {
-
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "text/plain"
+                        val appPackage = "com.whatsapp"
+                        intent.putExtra(Intent.EXTRA_TITLE, "Has Seleccionado un $nombre")
+                        intent.putExtra(Intent.EXTRA_TEXT, url)
+                        intent.setPackage(appPackage)
+                        if(intent.resolveActivity(context.packageManager) != null){
+                            launcher.launch(intent)
+                        }
                     },
                     //colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)) ,
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)
