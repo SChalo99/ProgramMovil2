@@ -1,5 +1,7 @@
 package pe.edu.ulima.ui.app.viewmodels
 
+import android.net.Uri
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -62,5 +64,17 @@ class PokemonDetailViewModel: ViewModel() {
         this.updateTalla(0f)
         this.updateUrl("")
         this.updateName("")
+    }
+
+    private val _uri2 = MutableLiveData<Uri>(null)
+    var uri2: LiveData<Uri> = _uri2
+    fun updateUri2(it: Uri){
+        _uri2.postValue(it)
+    }
+
+    private val _uri = mutableStateOf<Uri?>(null)
+    val uri get() = _uri.value
+    fun setUri(uri: Uri) {
+        _uri.value = uri
     }
 }

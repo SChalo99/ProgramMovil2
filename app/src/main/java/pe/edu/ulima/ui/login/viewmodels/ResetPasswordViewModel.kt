@@ -4,6 +4,8 @@ import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class ResetPasswordScreenViewModel: ViewModel() {
     private val _correo = MutableLiveData<String>("")
@@ -19,6 +21,14 @@ class ResetPasswordScreenViewModel: ViewModel() {
     }
 
     fun reset(){
-
+        val pattern: Pattern = Pattern.compile(".+@.+\\.[a-z]+")
+        val email = correo.value
+        val matcher: Matcher = pattern.matcher(email)
+        val matchFound: Boolean = matcher.matches()
+        if (matchFound){
+            updateMensaje("Se ha enviado la recuperación de contraseña a su correo")
+        }else{
+            updateMensaje("Error: Correo inválido")
+        }
     }
 }

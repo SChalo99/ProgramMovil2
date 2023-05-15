@@ -3,21 +3,24 @@ package pe.edu.ulima.ui.app.uis
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.R
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
@@ -35,6 +38,7 @@ import kotlinx.coroutines.launch
 import pe.edu.ulima.ui.app.viewmodels.PokemonDetailViewModel
 import pe.edu.ulima.R as RLocal
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 public fun PokemonDetailScreen(
     viewModel: PokemonDetailViewModel
@@ -45,6 +49,12 @@ public fun PokemonDetailScreen(
     val peso: Float by viewModel.peso.observeAsState(0f)
     val talla: Float by viewModel.talla.observeAsState(0f)
     val titulo: String by viewModel.titulo.observeAsState("")
+
+    // for image posting
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val uri3: Uri? by viewModel.uri2.observeAsState(initial = null)
+    val bitmap2 = remember { mutableStateOf<Bitmap?>(null)}
+
 
     var launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -67,13 +77,24 @@ public fun PokemonDetailScreen(
         Row(
             modifier = Modifier.fillMaxWidth()
         ){
-            Image(
-                painter = rememberImagePainter(data = url),
-                contentDescription = nombre,
-                modifier = Modifier
-                    .size(80.dp)
-                    .padding(bottom = 10.dp),
-            )
+
+            if (bitmap2.value == null){
+                Image(
+                    painter = rememberImagePainter(data = url),
+                    contentDescription = nombre,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .padding(bottom = 10.dp),
+                )
+            }else{
+                Image(
+                    bitmap = bitmap2.value!!.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .padding(bottom = 10.dp)
+                )
+            }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -219,6 +240,38 @@ public fun PokemonDetailScreen(
                     Text(
                         "Compartir en WhastApp",
                         color = Color.White
+                    )
+                }
+                val launcher2 = rememberLauncherForActivityResult(
+                    // ActivityResultContracts.StartActivityForResult(),
+                    contract = ActivityResultContracts.GetContent()
+                ) {
+                        uri: Uri? ->
+                    if (uri != null){
+                        viewModel.updateUri2(uri)
+                    }
+                }
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 15.dp/*, start = 40.dp, end = 40.dp*/), // start -> izquierda, end -> derecha
+                    onClick = {
+                        launcher2.launch("image/*")
+                        // image chooser
+                        uri3?.let {
+                            if(Build.VERSION.SDK_INT < 24){
+                                bitmap2.value = MediaStore.Images.Media.getBitmap(context.contentResolver, it)
+                            }else{
+                                val source = ImageDecoder.createSource(context.contentResolver, it)
+                                bitmap2.value = ImageDecoder.decodeBitmap(source)
+                            }
+                            viewModel.setUri(uri3!!)
+                        }
+                    }
+                ){
+                    Text(
+                        "${ titulo.toUpperCase().split(" ")[0] } EDITAR IMAGEN"
                     )
                 }
             }
