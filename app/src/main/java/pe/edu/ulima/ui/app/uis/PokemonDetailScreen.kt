@@ -143,7 +143,7 @@ public fun PokemonDetailScreen(
                     )
                 }
                 // shares buttons
-
+                val corutineScope = rememberCoroutineScope()
                 // facebook
                 Button(
                     modifier = Modifier
@@ -182,14 +182,27 @@ public fun PokemonDetailScreen(
                         .fillMaxWidth()
                         .padding(top = 1.dp, /*start = 40.dp, end = 40.dp*/),
                     onClick = {
-                        val intent = Intent(Intent.ACTION_SEND)
-                        intent.type = "text/plain"
-                        val appPackage = "com.whatsapp"
-                        intent.putExtra(Intent.EXTRA_TITLE, "Has Seleccionado un $nombre")
-                        intent.putExtra(Intent.EXTRA_TEXT, url)
-                        intent.setPackage(appPackage)
-                        if(intent.resolveActivity(context.packageManager) != null){
-                            launcher.launch(intent)
+
+                        corutineScope.launch {
+                            val imageLoader = ImageLoader(context)
+                            var request = ImageRequest.Builder(context).data(url).build()
+                            val bitmap = (imageLoader.execute(request) as SuccessResult).drawable.toBitmap()
+                            val uri = context.contentResolver.insert(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues()
+                            )?.apply {
+                                context.contentResolver.openOutputStream(this).use {
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+                                }
+                            }
+                            val intent = Intent(Intent.ACTION_SEND)
+                            intent.type = "image/jpg"
+                            val appPackage = "com.whatsapp"
+                            intent.putExtra(Intent.EXTRA_TITLE, "Has Seleccionado un $nombre")
+                            intent.putExtra(Intent.EXTRA_STREAM, uri)
+                            intent.setPackage(appPackage)
+                            if(intent.resolveActivity(context.packageManager) != null){
+                                launcher.launch(intent)
+                            }
                         }
                     },
                     //colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)) ,
