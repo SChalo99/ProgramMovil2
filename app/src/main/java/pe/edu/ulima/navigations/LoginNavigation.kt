@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import pe.edu.ulima.ui.login.uis.LoginScreen
 import pe.edu.ulima.ui.login.uis.ResetPasswordScreen
+import pe.edu.ulima.ui.login.uis.SplashScreen
 import pe.edu.ulima.ui.login.viewmodels.LoginViewModel
 import pe.edu.ulima.ui.login.viewmodels.ResetPasswordScreenViewModel
 
@@ -26,7 +27,7 @@ fun LoginNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = "/login/"
+        startDestination = "/"
     ){
         composable(
             route = "/login/{parameter}?optionalParameter={optionalParameter}",
@@ -61,6 +62,12 @@ fun LoginNavigation(
                     }
                 )
             }
+        }
+        composable(
+            route = "/",
+            arguments = listOf()
+        ){ entry ->
+            SplashScreen(navController)
         }
         composable(
             route = "/login/",

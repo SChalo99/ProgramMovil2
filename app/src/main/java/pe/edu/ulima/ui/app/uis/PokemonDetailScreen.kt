@@ -218,7 +218,7 @@ public fun PokemonDetailScreen(
                             val intent = Intent(Intent.ACTION_SEND)
                             intent.type = "image/jpg"
                             val appPackage = "com.whatsapp"
-                            intent.putExtra(Intent.EXTRA_TITLE, "Has Seleccionado un $nombre")
+                            intent.putExtra(Intent.EXTRA_TEXT, "Has Seleccionado un $nombre")
                             intent.putExtra(Intent.EXTRA_STREAM, uri)
                             intent.setPackage(appPackage)
                             if(intent.resolveActivity(context.packageManager) != null){
