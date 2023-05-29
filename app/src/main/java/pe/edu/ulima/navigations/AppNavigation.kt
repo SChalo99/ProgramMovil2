@@ -1,6 +1,8 @@
 package pe.edu.ulima.navigations
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +19,7 @@ import pe.edu.ulima.ui.app.viewmodels.PokemonDetailViewModel
 import pe.edu.ulima.ui.app.viewmodels.PokemonViewModel
 import pe.edu.ulima.ui.app.viewmodels.ProfileViewModel
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AppNavigation(
     pokemonScreenModel: PokemonViewModel,
@@ -63,10 +66,10 @@ fun AppNavigation(
             arguments = listOf(
             )
         ){
-            pokemonDetailViewModel.unsetPokemon()
+           /* pokemonDetailViewModel.unsetPokemon()
             PokemonDetailScreen(
                 viewModel = pokemonDetailViewModel
-            )
+            )*/
         }
         // profile
         composable(

@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import pe.edu.ulima.configs.BackendClient
 import pe.edu.ulima.models.Pokemon
 import pe.edu.ulima.services.PokemonService
+import kotlin.concurrent.thread
 
 class PokemonDetailViewModel: ViewModel() {
     private val _id = MutableLiveData<Int>(0)
@@ -46,7 +48,7 @@ class PokemonDetailViewModel: ViewModel() {
     }
 
     fun getPokemon(id: Int){
-        val pokemonsList: List<Pokemon> = PokemonService.fetchAll()
+        /*val pokemonsList: List<Pokemon> = PokemonService.fetchAll()
         for(pokemon in pokemonsList){
             if(pokemon.id == id){
                 this.updateTitulo("Editar Pokemon")
@@ -54,6 +56,24 @@ class PokemonDetailViewModel: ViewModel() {
                 this.updateTalla(pokemon.talla)
                 this.updateUrl(pokemon.url)
                 this.updateName(pokemon.nombre)
+            }
+        }*/
+        val apiService = BackendClient.buildService(PokemonService::class.java)
+        thread {
+            try {
+                val response = apiService.fetchOne(id).execute()
+                if (response.isSuccessful) {
+                    println(response.body())
+                    val pokemon: Pokemon = response.body()!!
+                    this.updateTitulo("Editar Pokemon")
+                    this.updatePeso(pokemon.peso)
+                    this.updateTalla(pokemon.talla)
+                    this.updateUrl(pokemon.url)
+                    this.updateName(pokemon.nombre)
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

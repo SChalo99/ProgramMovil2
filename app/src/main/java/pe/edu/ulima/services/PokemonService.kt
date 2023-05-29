@@ -1,8 +1,13 @@
 package pe.edu.ulima.services
 
 import pe.edu.ulima.models.Pokemon
+import pe.edu.ulima.models.demo.Pokemons
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-class PokemonService {
+/*class PokemonService {
     companion object {
         fun fetchAll(): List<Pokemon> {
             return listOf(
@@ -817,4 +822,16 @@ class PokemonService {
                 )
         }
     }
+}*/
+
+interface PokemonService{
+    @GET("/pokemon/list")
+    fun fetchAll(
+        @Query("name") name:String,
+        @Query("generation_ids") generationIds: String
+    ): Call<Pokemons>
+    @GET("/pokemon/{id}")
+    fun fetchOne(
+        @Path("id") id: Int
+    ): Call<Pokemon>
 }
