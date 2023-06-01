@@ -3,7 +3,11 @@ package pe.edu.ulima.ui.app.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import pe.edu.ulima.configs.BackendClient
+import pe.edu.ulima.models.Usuario
+import pe.edu.ulima.services.PokemonService
 import pe.edu.ulima.services.UserService
+import kotlin.concurrent.thread
 
 class ProfileViewModel: ViewModel() {
     private val _id = MutableLiveData<Int>(0)
@@ -43,10 +47,23 @@ class ProfileViewModel: ViewModel() {
     }
 
     fun setUsuario(id: Int){
-        val usuario = UserService.fetchOne(id)
-        this.updateUsuario(usuario.usuario)
-        this.updateCorreo(usuario.correo)
-        this.updateNombre(usuario.nombre)
-        this.updateImagen(usuario.imagen)
+        val apiService = BackendClient.buildService(UserService::class.java)
+
+        thread {
+            try {
+                val response = apiService.fetchOne(id).execute()
+                if (response.isSuccessful) {
+                    println(response.body())
+                    val usuario = response.body()!!
+                    this.updateUsuario(usuario.usuario)
+                    this.updateCorreo(usuario.correo)
+                    this.updateNombre(usuario.nombre)
+                    this.updateImagen(usuario.imagen)
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 }

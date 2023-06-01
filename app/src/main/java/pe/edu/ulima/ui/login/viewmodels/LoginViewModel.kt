@@ -8,7 +8,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import pe.edu.ulima.activities.AppActivity
+import pe.edu.ulima.configs.BackendClient
+import pe.edu.ulima.models.demo.UserValidate
+import pe.edu.ulima.services.PokemonService
 import pe.edu.ulima.services.UserService
+import kotlin.concurrent.thread
 
 class LoginViewModel: ViewModel() {
     private val _usuario = MutableLiveData<String>("")
@@ -30,19 +34,29 @@ class LoginViewModel: ViewModel() {
     }
 
     fun validar(context: Context){
-        val id: Int = UserService.validate(usuario.value!!, contrasenia.value!!)
-        if(id == 0){
-            updateMensaje("Error: Usuario y contraseña no válidos")
-        }else{
-            updateMensaje("Todo OK")
-            Handler().postDelayed({
-                updateMensaje("")
-                val appActivity =  Intent(context, AppActivity::class.java)
-                appActivity.putExtra("user_id", id)
-                context.startActivity(
-                    appActivity
-                )
-            }, 3000)
+        //val id: Int = UserService.validate(usuario.value!!, contrasenia.value!!)
+        val apiService = BackendClient.buildService(UserService::class.java)
+        var id = 0
+        thread {
+            try {
+                val body = UserValidate(usuario.value!!, contrasenia.value!!)
+                val response = apiService.validate(body).execute()
+                if (response.isSuccessful) {
+                    id = response.body()!!
+                    if(id == 0){
+                        updateMensaje("Error: Usuario y contraseña no válidos")
+                    }else{
+                        updateMensaje("Todo OK")
+                            val appActivity =  Intent(context, AppActivity::class.java)
+                            appActivity.putExtra("user_id", id)
+                            context.startActivity(
+                                appActivity
+                            )
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

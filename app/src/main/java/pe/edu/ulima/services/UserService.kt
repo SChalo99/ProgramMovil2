@@ -1,7 +1,14 @@
 package pe.edu.ulima.services
 
 import pe.edu.ulima.models.Usuario
+import pe.edu.ulima.models.demo.UserValidate
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
+/*
 class UserService {
     companion object {
         val usuarios = listOf(
@@ -30,4 +37,16 @@ class UserService {
             return usuario
         }
     }
+}*/
+
+interface UserService{
+    @POST("/user/validate")
+    fun validate(
+        @Body requestModel: UserValidate
+    ): Call<Int>
+
+    @GET("/user/fetch_one")
+    fun fetchOne(
+        @Path("id") id: Int
+    ): Call<Usuario>
 }

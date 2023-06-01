@@ -260,7 +260,7 @@ public fun PokemonDetailScreen(
                         launcher2.launch("image/*")
                         // image chooser
                         uri3?.let {
-                            if(Build.VERSION.SDK_INT < 24){
+                            if(Build.VERSION.SDK_INT < 28){
                                 bitmap2.value = MediaStore.Images.Media.getBitmap(context.contentResolver, it)
                             }else{
                                 val source = ImageDecoder.createSource(context.contentResolver, it)
