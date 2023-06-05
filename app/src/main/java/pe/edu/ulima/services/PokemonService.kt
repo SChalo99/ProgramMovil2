@@ -1,6 +1,7 @@
 package pe.edu.ulima.services
 
 import pe.edu.ulima.models.Pokemon
+import pe.edu.ulima.models.beans.PokemonList
 import pe.edu.ulima.models.demo.Pokemons
 import retrofit2.Call
 import retrofit2.http.GET
@@ -834,4 +835,10 @@ interface PokemonService{
     fun fetchOne(
         @Path("id") id: Int
     ): Call<Pokemon>
+
+    @GET("/pokemon/list")
+    fun fetchAllLocal(
+        @Query("name") name:String,
+        @Query("generation_ids") generationIds: String
+    ): Call<PokemonList>
 }

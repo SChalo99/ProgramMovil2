@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /*
 class UserService {
@@ -47,6 +48,6 @@ interface UserService{
 
     @GET("/user/fetch_one")
     fun fetchOne(
-        @Path("id") id: Int
+        @Query("id") id: Int
     ): Call<Usuario>
 }

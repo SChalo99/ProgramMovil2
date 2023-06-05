@@ -1,10 +1,17 @@
 package pe.edu.ulima.models
 
+import com.google.gson.annotations.SerializedName
+
 data class Usuario (
-    var id: Int = 0,
-    var usuario: String = "",
-    var contrasenia: String = "",
-    var nombre: String = "",
-    var correo: String = "",
+    val id: Int,
+    @SerializedName("user")
+    val usuario: String,
+    @SerializedName("name")
+    val nombre: String,
+    @SerializedName("password")
+    val contrasenia: String,
+    @SerializedName("email")
+    val correo: String,
+    @SerializedName("image_url")
     var imagen: String = "",
 )

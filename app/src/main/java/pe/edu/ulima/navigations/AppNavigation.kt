@@ -1,20 +1,24 @@
 package pe.edu.ulima.navigations
 
+import android.app.Activity
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import pe.edu.ulima.ui.app.uis.HomeScreen
 import pe.edu.ulima.ui.app.uis.PokemonDetailScreen
 import pe.edu.ulima.ui.app.uis.PokemonScreen
 import pe.edu.ulima.ui.app.uis.ProfileScreen
+import pe.edu.ulima.ui.app.viewmodels.HomeViewModel
 import pe.edu.ulima.ui.app.viewmodels.PokemonDetailViewModel
 import pe.edu.ulima.ui.app.viewmodels.PokemonViewModel
 import pe.edu.ulima.ui.app.viewmodels.ProfileViewModel
@@ -39,10 +43,14 @@ fun AppNavigation(
         composable(
             route = "/pokemon"
         ){
+            val context = LocalContext.current
+            /*HomeViewModel().setPokemons(activity = context as Activity)*/
+        /*
            PokemonScreen(
                viewModel = pokemonScreenModel,
                navController
-           )
+           )*/
+            HomeScreen(viewModel = HomeViewModel(), navController = navController)
         }
         // editar pokemon
         composable(

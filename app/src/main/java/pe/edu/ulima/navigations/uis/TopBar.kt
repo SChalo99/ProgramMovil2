@@ -1,6 +1,7 @@
 package pe.edu.ulima.ui.theme
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -26,6 +27,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import pe.edu.ulima.BuildConfig
 import pe.edu.ulima.R
+import pe.edu.ulima.configs.LocalDB
+import kotlin.concurrent.thread
 
 @Preview
 @Composable
@@ -81,6 +84,13 @@ fun SearchAction(){
     val context = LocalContext.current
     IconButton(
         onClick = {
+            val activity = context as Activity
+
+            thread {
+                val database = LocalDB.getDatabase(activity as Context)
+                val pokemonDao = database.pokemonDao()
+                pokemonDao.deleteAllPokemons()
+            }
             Toast.makeText(context,"Buscar???", Toast.LENGTH_SHORT).show()
         }
     ){
